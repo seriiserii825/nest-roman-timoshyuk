@@ -1,0 +1,5 @@
+Error Log
+
+Repository: /home/serii/Documents/nest/nest-roman-timoshyuk
+Error: Local and remote commits are identical.
+
