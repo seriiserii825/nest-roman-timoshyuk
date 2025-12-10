@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { UserService } from 'src/user/user.service';
 import * as argon2 from 'argon2';
 import { IValidateUser } from './interfaces/IValidateUser';
@@ -25,6 +25,12 @@ export class AuthService {
       return result;
     }
     return null;
+  }
+
+  async logout(email: string) {
+    const user = await this.usersService.findOne(email);
+    if (!user) throw new NotFoundException('User not found');
+    return { success: true };
   }
 
   async login(user: any) {
