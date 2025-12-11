@@ -15,7 +15,7 @@ import { UpdateCategoryDto } from './dto/update-category.dto';
 import type { IJwtRequest } from 'src/auth/interfaces/IJwtRequest';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
-@Controller('category')
+@Controller('categories')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
