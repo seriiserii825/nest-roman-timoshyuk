@@ -6,6 +6,7 @@ import { Transaction } from './entities/transaction.entity';
 import { Repository } from 'typeorm';
 import { UserService } from 'src/user/user.service';
 import { CategoryService } from 'src/category/category.service';
+import { PaginationTransactionDto } from './dto/pagination-transaction-dto';
 
 @Injectable()
 export class TransactionService {
@@ -20,11 +21,9 @@ export class TransactionService {
     if (!user) {
       throw new BadRequestException('User not found');
     }
-    console.log(createTransactionDto.category, 'createTransactionDto.category');
     const category = await this.categoryService.findOne(
       createTransactionDto.category,
     );
-    console.log(category, 'category');
     if (!category) {
       throw new BadRequestException('Category not found');
     }
@@ -43,19 +42,43 @@ export class TransactionService {
     }
   }
 
-  findAll() {
-    return `This action returns all transaction`;
+  findAll(user_id: number) {
+    return this.transactionRepository.find({
+      where: { user: { id: user_id } },
+      relations: ['category'],
+      order: { createdAt: 'DESC' },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} transaction`;
+  async findAllWithPagination(user_id: number, dto: PaginationTransactionDto) {
+    return this.transactionRepository.findAndCount({
+      where: { user: { id: user_id } },
+      relations: ['category'],
+      order: { createdAt: 'DESC' },
+      skip: dto.skip,
+      take: dto.take,
+    });
+  }
+
+  findOne(id: number, user_id: number) {
+    return this.transactionRepository.findOne({
+      where: { id, user: { id: user_id } },
+      relations: ['category'],
+    });
   }
 
   update(id: number, updateTransactionDto: UpdateTransactionDto) {
     return `This action updates a #${id} transaction`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} transaction`;
+  async remove(id: number, user_id: number) {
+    const transaction = await this.transactionRepository.findOne({
+      where: { id, user: { id: user_id } },
+    });
+    if (!transaction) {
+      throw new BadRequestException('Transaction not found');
+    }
+    await this.transactionRepository.remove(transaction);
+    return 'Transaction deleted successfully';
   }
 }
