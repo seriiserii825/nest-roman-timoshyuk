@@ -18,9 +18,7 @@ export class CategoryService {
   ) {}
 
   async create(createCategoryDto: CreateCategoryDto, request: IJwtRequest) {
-    console.log(request, 'request');
     const userId = request.user.userId;
-    console.log('userId', userId);
     const category_exists = await this.categoryRepository.findOne({
       where: { title: createCategoryDto.title, user: { id: userId } },
     });
