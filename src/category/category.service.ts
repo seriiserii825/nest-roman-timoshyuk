@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { IJwtRequest } from 'src/auth/interfaces/IJwtRequest';
@@ -33,6 +37,7 @@ export class CategoryService {
   findAll() {
     return this.categoryRepository.find({
       relations: ['user'],
+      order: { createdAt: 'DESC' },
     });
   }
 
@@ -44,7 +49,14 @@ export class CategoryService {
     return `This action updates a #${id} category`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} category`;
+  async remove(id: number) {
+    const category = await this.categoryRepository.findOne({
+      where: { id },
+    });
+    if (!category) {
+      throw new NotFoundException('Category not found');
+    }
+    await this.categoryRepository.remove(category);
+    return { message: 'Category removed successfully' };
   }
 }
