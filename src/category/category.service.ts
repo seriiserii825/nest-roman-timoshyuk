@@ -34,9 +34,14 @@ export class CategoryService {
     return this.categoryRepository.save(new_category);
   }
 
-  findAll() {
+  findAll(user_id: number) {
     return this.categoryRepository.find({
-      relations: ['user'],
+      where: {
+        user: { id: user_id },
+      },
+      relations: {
+        transactions: true
+      },
       order: { createdAt: 'DESC' },
     });
   }

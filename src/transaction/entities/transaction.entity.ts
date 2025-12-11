@@ -29,8 +29,11 @@ export class Transaction {
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @OneToMany(() => Category, (category) => category.transaction)
-  categories: Category[];
+  @ManyToOne(() => Category, (category) => category.transactions, {
+    nullable: true,
+  })
+  @JoinColumn({ name: 'category_id' })
+  category: Category | null;
 
   @CreateDateColumn()
   createdAt: Date;

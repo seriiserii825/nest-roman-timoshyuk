@@ -16,11 +16,11 @@ import type { IJwtRequest } from 'src/auth/interfaces/IJwtRequest';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @Controller('categories')
+@UseGuards(JwtAuthGuard)
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
   @Post()
-  @UseGuards(JwtAuthGuard)
   create(
     @Body() createCategoryDto: CreateCategoryDto,
     @Req() request: IJwtRequest,
@@ -29,8 +29,8 @@ export class CategoryController {
   }
 
   @Get()
-  findAll() {
-    return this.categoryService.findAll();
+  findAll(@Req() request: IJwtRequest) {
+    return this.categoryService.findAll(request.user.userId);
   }
 
   @Get(':id')
@@ -39,7 +39,6 @@ export class CategoryController {
   }
 
   @Put(':id')
-  @UseGuards(JwtAuthGuard)
   update(
     @Param('id') id: string,
     @Body() updateCategoryDto: UpdateCategoryDto,

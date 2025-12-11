@@ -4,6 +4,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  IsNull,
   JoinColumn,
   ManyToOne,
   OneToMany,
@@ -25,8 +26,8 @@ export class Category {
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @OneToMany(() => Transaction, (transaction) => transaction.categories)
-  transaction: Transaction;
+  @OneToMany(() => Transaction, (transaction) => transaction.category)
+  transactions: Transaction[]; // Changed: plural name and array type
 
   @CreateDateColumn()
   createdAt: Date;
