@@ -3,7 +3,6 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   Req,
@@ -17,11 +16,11 @@ import type { IJwtRequest } from 'src/auth/interfaces/IJwtRequest';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @Controller('category')
-@UseGuards(JwtAuthGuard)
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
   @Post()
+  @UseGuards(JwtAuthGuard)
   create(
     @Body() createCategoryDto: CreateCategoryDto,
     @Req() request: IJwtRequest,
@@ -40,6 +39,7 @@ export class CategoryController {
   }
 
   @Put(':id')
+  @UseGuards(JwtAuthGuard)
   update(
     @Param('id') id: string,
     @Body() updateCategoryDto: UpdateCategoryDto,
