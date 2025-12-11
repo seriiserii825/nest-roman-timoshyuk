@@ -24,6 +24,7 @@ export class UserService {
     });
     try {
       await this.userRepository.save(new_user);
+      return { response: new_user.id };
     } catch (error) {
       throw new BadRequestException(`Bad credentials: ${error.message}`);
     }
