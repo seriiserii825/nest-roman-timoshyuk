@@ -1,5 +1,6 @@
+import { Exclude } from 'class-transformer';
 import { Category } from 'src/category/entities/category.entity';
-import {Transaction} from 'src/transaction/entities/transaction.entity';
+import { Transaction } from 'src/transaction/entities/transaction.entity';
 import {
   Column,
   CreateDateColumn,
@@ -19,7 +20,8 @@ export class User {
   @Column()
   email: string;
 
-  @Column()
+  @Column({ select: false })
+  @Exclude()
   password: string;
 
   @OneToMany(() => Category, (category) => category.user, {

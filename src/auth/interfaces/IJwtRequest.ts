@@ -1,4 +1,6 @@
 export interface IJwtRequest {
-  userId: number;
-  email: string;
+  user: {
+    userId: number;
+    email: string;
+  };
 }
