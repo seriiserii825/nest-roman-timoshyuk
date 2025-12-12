@@ -5,17 +5,27 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  
+
   const config = new DocumentBuilder()
     .setTitle('Transactions API')
     .setDescription('API for managing money transactions')
     .setVersion('1.0')
     .addTag('transactions')
-    .addBearerAuth() // Optional: if you're using JWT
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        name: 'JWT',
+        description: 'Enter JWT token',
+        in: 'header',
+      },
+      'JWT-auth', // This name here is important for later reference
+    )
     .build();
-  
+
   const document = SwaggerModule.createDocument(app, config);
-  
+
   SwaggerModule.setup('docs', app, document, {
     swaggerOptions: {
       docExpansion: 'none', // All routes collapsed
@@ -25,7 +35,7 @@ async function bootstrap() {
       operationsSorter: 'alpha', // Sorts operations alphabetically
     },
   });
-  
+
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true, // удаляет поля, которых нет в DTO
@@ -36,9 +46,9 @@ async function bootstrap() {
       },
     }),
   );
-  
+
   app.enableCors();
-  
+
   await app.listen(process.env.PORT ?? 3333);
 }
 bootstrap();

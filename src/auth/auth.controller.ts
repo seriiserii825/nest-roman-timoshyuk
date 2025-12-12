@@ -1,33 +1,16 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Request,
-  UseGuards,
-  Body,
-} from '@nestjs/common';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiResponse,
-  ApiBearerAuth,
-  ApiBody,
-} from '@nestjs/swagger';
+import { Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
+import { ApiTags, ApiResponse, ApiBearerAuth, ApiBody } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
-import { LocalAuthGuard } from './guards/local-auth.guard';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { LoginDto } from './dto/login.dto';
-import { CustomApiUnauthorizedResponse } from 'src/common/decorators/api-responses.decorator';
 import type { IJwtRequest } from './interfaces/IJwtRequest';
+import { CustomApiUnauthorizedResponse } from 'src/common/decorators/api-responses.decorator';
 
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @UseGuards(LocalAuthGuard)
-  @Post('login')
-  @CustomApiUnauthorizedResponse()
   @ApiBody({
     type: LoginDto,
     description: 'User credentials',
@@ -54,35 +37,13 @@ export class AuthController {
       },
     },
   })
+  @Post('login')
   async login(@Request() req: IJwtRequest) {
     return this.authService.login(req.user);
   }
 
-  @UseGuards(LocalAuthGuard)
-  @Post('logout')
-  @ApiOperation({ summary: 'User logout' })
-  @ApiBody({
-    type: LoginDto,
-    description: 'User credentials for logout',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Successfully logged out',
-    schema: {
-      example: {
-        message: 'Logged out successfully',
-      },
-    },
-  })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
-  async logout(@Request() req: IJwtRequest) {
-    return this.authService.logout(req.user.email);
-  }
-
   @UseGuards(JwtAuthGuard)
-  @Get('profile')
   @ApiBearerAuth('JWT-auth')
-  @ApiOperation({ summary: 'Get user profile' })
   @ApiResponse({
     status: 200,
     description: 'Returns user profile',
@@ -93,10 +54,8 @@ export class AuthController {
       },
     },
   })
-  @ApiResponse({
-    status: 401,
-    description: 'Unauthorized - Invalid or missing token',
-  })
+  @CustomApiUnauthorizedResponse()
+  @Get('profile')
   getProfile(@Request() req: IJwtRequest) {
     return req.user;
   }
