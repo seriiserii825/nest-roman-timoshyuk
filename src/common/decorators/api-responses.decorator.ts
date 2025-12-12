@@ -17,14 +17,14 @@ export function CustomApiUnauthorizedResponse() {
 }
 
 // You can also create other common responses
-export function CustomApiBadRequestResponse() {
+export function CustomApiBadRequestResponse(message: string) {
   return applyDecorators(
     ApiResponse({
       status: 400,
       description: 'Bad Request',
       schema: {
         example: {
-          message: 'Validation failed',
+          message,
           statusCode: 400,
         },
       },

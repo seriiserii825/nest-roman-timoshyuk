@@ -3,7 +3,7 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { ApiBody, ApiResponse } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import {CustomApiUnauthorizedResponse} from 'src/common/decorators/api-responses.decorator';
+import {CustomApiBadRequestResponse, CustomApiUnauthorizedResponse} from 'src/common/decorators/api-responses.decorator';
 
 @Controller('users')
 export class UserController {
@@ -32,17 +32,7 @@ export class UserController {
       },
     },
   })
-  @ApiResponse({
-    status: 400,
-    description: 'Bad Request',
-    schema: {
-      example: {
-        statusCode: 400,
-        message: 'Bad credentials',
-        error: 'Bad Request',
-      },
-    },
-  })
+  @CustomApiBadRequestResponse('Bad credentials')
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
   }
