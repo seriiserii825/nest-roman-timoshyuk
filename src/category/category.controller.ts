@@ -165,7 +165,6 @@ export class CategoryController {
       },
     },
   })
-  @CustomApiNotFoundResponse('Category not found')
   @CustomApiBadRequestResponse(
     'Cannot delete category with existing transactions',
   )

@@ -43,13 +43,18 @@ export class TransactionService {
   }
 
   async findAllWithPagination(user_id: number, dto: PaginationTransactionDto) {
-    return this.transactionRepository.findAndCount({
+    const transactions = await this.transactionRepository.findAndCount({
       where: { user: { id: user_id } },
       relations: ['category'],
       order: { createdAt: 'DESC' },
       skip: dto.skip,
       take: dto.take,
     });
+    const total = transactions[1];
+    return {
+      data: transactions[0],
+      count: total,
+    }
   }
 
   findOne(id: number, user_id: number) {
@@ -67,6 +72,8 @@ export class TransactionService {
       throw new BadRequestException('Transaction not found');
     }
     await this.transactionRepository.remove(transaction);
-    return 'Transaction deleted successfully';
+    return {
+      message: 'Transaction deleted successfully',
+    };
   }
 }
