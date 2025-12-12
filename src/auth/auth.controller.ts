@@ -1,9 +1,24 @@
-import { Controller, Get, Post, Request, UseGuards, Body } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiBody } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Post,
+  Request,
+  UseGuards,
+  Body,
+} from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+  ApiBody,
+} from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import {LoginDto} from './dto/login.dto';
+import { LoginDto } from './dto/login.dto';
+import { CustomApiUnauthorizedResponse } from 'src/common/decorators/api-responses.decorator';
+import type { IJwtRequest } from './interfaces/IJwtRequest';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -12,6 +27,7 @@ export class AuthController {
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
+  @CustomApiUnauthorizedResponse()
   @ApiBody({
     type: LoginDto,
     description: 'User credentials',
@@ -20,26 +36,25 @@ export class AuthController {
         summary: 'Example user',
         value: {
           email: 'radu@mail.com',
-          password: '123456'
-        }
-      }
-    }
+          password: '123456',
+        },
+      },
+    },
   })
-  @ApiResponse({ 
-    status: 200, 
+  @ApiResponse({
+    status: 200,
     description: 'Successfully logged in',
     schema: {
       example: {
         access_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
         user: {
           id: 1,
-          email: 'user@example.com'
-        }
-      }
-    }
+          email: 'user@example.com',
+        },
+      },
+    },
   })
-  @ApiResponse({ status: 401, description: 'Invalid credentials' })
-  async login(@Request() req: any) {
+  async login(@Request() req: IJwtRequest) {
     return this.authService.login(req.user);
   }
 
@@ -48,19 +63,19 @@ export class AuthController {
   @ApiOperation({ summary: 'User logout' })
   @ApiBody({
     type: LoginDto,
-    description: 'User credentials for logout'
+    description: 'User credentials for logout',
   })
-  @ApiResponse({ 
-    status: 200, 
+  @ApiResponse({
+    status: 200,
     description: 'Successfully logged out',
     schema: {
       example: {
-        message: 'Logged out successfully'
-      }
-    }
+        message: 'Logged out successfully',
+      },
+    },
   })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  async logout(@Request() req: any) {
+  async logout(@Request() req: IJwtRequest) {
     return this.authService.logout(req.user.email);
   }
 
@@ -68,18 +83,21 @@ export class AuthController {
   @Get('profile')
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({ summary: 'Get user profile' })
-  @ApiResponse({ 
-    status: 200, 
+  @ApiResponse({
+    status: 200,
     description: 'Returns user profile',
     schema: {
       example: {
         userId: 1,
-        email: 'user@example.com'
-      }
-    }
+        email: 'user@example.com',
+      },
+    },
   })
-  @ApiResponse({ status: 401, description: 'Unauthorized - Invalid or missing token' })
-  getProfile(@Request() req) {
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized - Invalid or missing token',
+  })
+  getProfile(@Request() req: IJwtRequest) {
     return req.user;
   }
 }
