@@ -1,12 +1,11 @@
 import { Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiResponse, ApiBearerAuth, ApiBody } from '@nestjs/swagger';
+import { ApiResponse, ApiBearerAuth, ApiBody } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { LoginDto } from './dto/login.dto';
 import type { IJwtRequest } from './interfaces/IJwtRequest';
 import { CustomApiUnauthorizedResponse } from 'src/common/decorators/api-responses.decorator';
 
-@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}

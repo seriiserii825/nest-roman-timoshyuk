@@ -10,7 +10,6 @@ async function bootstrap() {
     .setTitle('Transactions API')
     .setDescription('API for managing money transactions')
     .setVersion('1.0')
-    .addTag('transactions')
     .addBearerAuth(
       {
         type: 'http',
