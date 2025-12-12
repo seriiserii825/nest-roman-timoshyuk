@@ -3,14 +3,7 @@ import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiBody } from '@nes
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
-
-class LoginDto {
-  /** User email address */
-  email: string;
-
-  /** User password */
-  password: string;
-}
+import {LoginDto} from './dto/login.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
