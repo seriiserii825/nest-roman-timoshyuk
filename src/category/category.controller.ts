@@ -60,6 +60,26 @@ export class CategoryController {
     return this.categoryService.create(createCategoryDto, request);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('JWT-auth')
+  @CustomApiUnauthorizedResponse()
+  @ApiResponse({
+    status: 200,
+    description: 'List of categories for the authenticated user.',
+    schema: {
+      example: [
+        {
+          id: 1,
+          title: 'Electronics',
+          user: {
+            id: 1,
+          },
+          createdAt: '2024-01-01T00:00:00.000Z',
+          updatedAt: '2024-01-01T00:00:00.000Z',
+        },
+      ],
+    },
+  })
   @Get()
   findAll(@Req() request: IJwtRequest) {
     return this.categoryService.findAll(request.user.userId);
