@@ -31,14 +31,7 @@ export class TransactionService {
       category: { id: createTransactionDto.category },
       user: { id: user_id },
     });
-    try {
-      return this.transactionRepository.save(new_transaction);
-    } catch (error) {
-      const message = error.message
-        ? error.message
-        : 'Error creating transaction';
-      throw new BadRequestException(message);
-    }
+    return this.transactionRepository.save(new_transaction);
   }
 
   findAll(user_id: number) {
