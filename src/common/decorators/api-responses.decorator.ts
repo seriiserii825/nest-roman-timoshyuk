@@ -51,6 +51,6 @@ export function CustomApiNotFoundResponse() {
 export function CustomApiCommonResponses() {
   return applyDecorators(
     CustomApiUnauthorizedResponse(),
-    CustomApiBadRequestResponse(),
+    CustomApiBadRequestResponse('Bad Request'),
   );
 }
