@@ -38,7 +38,7 @@ export class AuthController {
   })
   @Post('login')
   async login(@Request() req: IJwtRequest) {
-    return this.authService.login(req.user);
+    return this.authService.login(req);
   }
 
   @UseGuards(JwtAuthGuard)

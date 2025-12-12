@@ -60,8 +60,8 @@ export class UserController {
       ],
     },
   })
-  @CustomApiUnauthorizedResponse()
-  @UseGuards(JwtAuthGuard)
+  // @CustomApiUnauthorizedResponse()
+  // @UseGuards(JwtAuthGuard)
   @Get()
   findAll() {
     return this.userService.findAll();
