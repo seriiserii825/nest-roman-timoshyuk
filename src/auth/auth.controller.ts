@@ -5,6 +5,7 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { LoginDto } from './dto/login.dto';
 import type { IJwtRequest } from './interfaces/IJwtRequest';
 import { CustomApiUnauthorizedResponse } from 'src/common/decorators/api-responses.decorator';
+import { LocalAuthGuard } from './guards/local-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -36,8 +37,9 @@ export class AuthController {
       },
     },
   })
+  @UseGuards(LocalAuthGuard)
   @Post('login')
-  async login(@Request() req: IJwtRequest) {
+  login(@Request() req: IJwtRequest) {
     return this.authService.login(req);
   }
 
