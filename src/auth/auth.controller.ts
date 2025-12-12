@@ -44,6 +44,7 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('JWT-auth')
+  @CustomApiUnauthorizedResponse()
   @ApiResponse({
     status: 200,
     description: 'Returns user profile',
@@ -54,7 +55,6 @@ export class AuthController {
       },
     },
   })
-  @CustomApiUnauthorizedResponse()
   @Get('profile')
   getProfile(@Request() req: IJwtRequest) {
     return req.user;
