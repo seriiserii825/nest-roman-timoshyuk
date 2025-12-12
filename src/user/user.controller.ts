@@ -3,6 +3,7 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { ApiBody, ApiResponse } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import {CustomApiUnauthorizedResponse} from 'src/common/decorators/api-responses.decorator';
 
 @Controller('users')
 export class UserController {
@@ -66,16 +67,7 @@ export class UserController {
       ],
     },
   })
-  @ApiResponse({
-    status: 401,
-    description: 'Unauthorized',
-    schema: {
-      example: {
-        message: 'Unauthorized',
-        statusCode: 401,
-      },
-    },
-  })
+  @CustomApiUnauthorizedResponse()
   @UseGuards(JwtAuthGuard)
   @Get()
   findAll() {
