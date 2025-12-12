@@ -15,10 +15,16 @@ import { UpdateCategoryDto } from './dto/update-category.dto';
 import type { IJwtRequest } from 'src/auth/interfaces/IJwtRequest';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { ApiBearerAuth, ApiBody, ApiParam, ApiResponse } from '@nestjs/swagger';
-import { CustomApiBadRequestResponse, CustomApiNotFoundResponse, CustomApiUnauthorizedResponse } from 'src/common/decorators/api-responses.decorator';
+import {
+  CustomApiBadRequestResponse,
+  CustomApiNotFoundResponse,
+  CustomApiUnauthorizedResponse,
+} from 'src/common/decorators/api-responses.decorator';
 
-@Controller('categories')
 @UseGuards(JwtAuthGuard)
+@ApiBearerAuth('JWT-auth')
+@CustomApiUnauthorizedResponse()
+@Controller('categories')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
@@ -50,9 +56,6 @@ export class CategoryController {
       },
     },
   })
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth('JWT-auth')
-  @CustomApiUnauthorizedResponse()
   @Post()
   create(
     @Body() createCategoryDto: CreateCategoryDto,
@@ -61,9 +64,6 @@ export class CategoryController {
     return this.categoryService.create(createCategoryDto, request);
   }
 
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth('JWT-auth')
-  @CustomApiUnauthorizedResponse()
   @ApiResponse({
     status: 200,
     description: 'List of categories for the authenticated user.',
@@ -86,9 +86,6 @@ export class CategoryController {
     return this.categoryService.findAll(request.user.userId);
   }
 
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth('JWT-auth')
-  @CustomApiUnauthorizedResponse()
   @ApiParam({
     name: 'id',
     type: 'integer',
@@ -127,9 +124,6 @@ export class CategoryController {
     return this.categoryService.findOne(+id);
   }
 
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth('JWT-auth')
-  @CustomApiUnauthorizedResponse()
   @ApiParam({
     name: 'id',
     type: 'integer',
@@ -156,9 +150,6 @@ export class CategoryController {
     return this.categoryService.update(+id, updateCategoryDto);
   }
 
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth('JWT-auth')
-  @CustomApiUnauthorizedResponse()
   @ApiParam({
     name: 'id',
     type: 'integer',
@@ -175,7 +166,9 @@ export class CategoryController {
     },
   })
   @CustomApiNotFoundResponse('Category not found')
-  @CustomApiBadRequestResponse('Cannot delete category with existing transactions')
+  @CustomApiBadRequestResponse(
+    'Cannot delete category with existing transactions',
+  )
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.categoryService.remove(+id);
