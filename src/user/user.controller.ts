@@ -1,9 +1,10 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { ApiBody, ApiResponse } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
-@Controller('user')
+@Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
@@ -45,6 +46,37 @@ export class UserController {
     return this.userService.create(createUserDto);
   }
 
+  @ApiResponse({
+    status: 200,
+    description: 'List of all users',
+    schema: {
+      example: [
+        {
+          id: 'user_id_1',
+          email: 'some@mail.com',
+          createdAt: '2024-01-01T00:00:00.000Z',
+          updatedAt: '2024-01-01T00:00:00.000Z',
+        },
+        {
+          id: 'user_id_2',
+          email: 'test@mail.com',
+          createdAt: '2024-01-01T00:00:00.000Z',
+          updatedAt: '2024-01-01T00:00:00.000Z',
+        },
+      ],
+    },
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+    schema: {
+      example: {
+        message: 'Unauthorized',
+        statusCode: 401,
+      },
+    },
+  })
+  @UseGuards(JwtAuthGuard)
   @Get()
   findAll() {
     return this.userService.findAll();
