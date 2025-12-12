@@ -38,7 +38,7 @@ export class CategoryService {
         user: { id: user_id },
       },
       relations: {
-        transactions: true
+        transactions: true,
       },
       order: { createdAt: 'DESC' },
     });
@@ -69,11 +69,19 @@ export class CategoryService {
   async remove(id: number) {
     const category = await this.categoryRepository.findOne({
       where: { id },
+      relations: ['transactions'], // Load related transactions
     });
+
     if (!category) {
       throw new NotFoundException('Category not found');
     }
-    await this.categoryRepository.remove(category);
-    return { message: 'Category removed successfully' };
+
+    if (category.transactions && category.transactions.length > 0) {
+      throw new BadRequestException(
+        'Cannot delete category with existing transactions',
+      );
+    }
+
+    return await this.categoryRepository.remove(category);
   }
 }

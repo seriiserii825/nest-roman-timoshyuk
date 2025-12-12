@@ -32,14 +32,15 @@ export function CustomApiBadRequestResponse(message: string) {
   );
 }
 
-export function CustomApiNotFoundResponse() {
+export function CustomApiNotFoundResponse(message: string) {
   return applyDecorators(
     ApiResponse({
       status: 404,
       description: 'Not Found',
       schema: {
         example: {
-          message: 'Resource not found',
+          message,
+          error: 'Not Found',
           statusCode: 404,
         },
       },
