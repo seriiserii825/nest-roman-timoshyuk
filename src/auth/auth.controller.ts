@@ -39,8 +39,10 @@ export class AuthController {
   })
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  login(@Request() req: IJwtRequest) {
-    return this.authService.login(req);
+  login(@Request() req: { user: { email: string; id: number } }) {
+    const email = req.user.email;
+    const id = req.user.id;
+    return this.authService.login(email, id);
   }
 
   @UseGuards(JwtAuthGuard)

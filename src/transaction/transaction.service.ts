@@ -46,6 +46,14 @@ export class TransactionService {
     });
   }
 
+  
+  findAllAdmin() {
+    return this.transactionRepository.find({
+      relations: ['category', 'user'],
+      order: { createdAt: 'DESC' },
+    });
+  }
+
   async findAllWithPagination(user_id: number, dto: PaginationTransactionDto) {
     const transactions = await this.transactionRepository.findAndCount({
       where: { user: { id: user_id } },

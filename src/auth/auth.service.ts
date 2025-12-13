@@ -4,7 +4,6 @@ import * as argon2 from 'argon2';
 import { IValidateUser } from './interfaces/IValidateUser';
 import { JwtService } from '@nestjs/jwt';
 import { IJwtPayload } from './interfaces/IJwtPayload';
-import { IJwtRequest } from './interfaces/IJwtRequest';
 
 @Injectable()
 export class AuthService {
@@ -34,10 +33,10 @@ export class AuthService {
     return { success: true };
   }
 
-  login(req: IJwtRequest) {
+  login(email: string, id: number) {
     const payload: IJwtPayload = {
-      email: req.user.email,
-      sub: req.user.userId,
+      email,
+      sub: id,
     };
     return {
       access_token: this.jwtService.sign(payload),
