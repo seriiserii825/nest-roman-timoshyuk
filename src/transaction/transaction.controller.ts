@@ -23,7 +23,6 @@ import {
 } from '@nestjs/swagger';
 import { CustomApiUnauthorizedResponse } from 'src/common/decorators/api-responses.decorator';
 
-@UseGuards(JwtAuthGuard)
 @ApiBearerAuth('JWT-auth')
 @CustomApiUnauthorizedResponse()
 @Controller('transactions')
@@ -82,6 +81,7 @@ export class TransactionController {
     );
   }
 
+  @UseGuards(JwtAuthGuard)
   @ApiResponse({
     status: 200,
     description: 'List of transactions for the authenticated user.',
@@ -109,6 +109,7 @@ export class TransactionController {
   })
   @Get()
   findAll(@Req() req: IJwtRequest) {
+    console.log(req, 'req');
     return this.transactionService.findAll(req.user.userId);
   }
 

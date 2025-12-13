@@ -34,10 +34,14 @@ export class TransactionService {
     return this.transactionRepository.save(new_transaction);
   }
 
+  //TODO: update swagger docs error
   findAll(user_id: number) {
+    if (!user_id) {
+      throw new BadRequestException('User ID is required');
+    }
     return this.transactionRepository.find({
       where: { user: { id: user_id } },
-      relations: ['category'],
+      relations: ['category', 'user'],
       order: { createdAt: 'DESC' },
     });
   }
