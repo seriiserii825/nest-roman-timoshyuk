@@ -34,7 +34,6 @@ export class TransactionService {
     return this.transactionRepository.save(new_transaction);
   }
 
-  //TODO: update swagger docs error
   findAll(user_id: number) {
     if (!user_id) {
       throw new BadRequestException('User ID is required');

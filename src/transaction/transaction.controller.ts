@@ -21,7 +21,7 @@ import {
   ApiQuery,
   ApiResponse,
 } from '@nestjs/swagger';
-import { CustomApiUnauthorizedResponse } from 'src/common/decorators/api-responses.decorator';
+import { CustomApiBadRequestResponse, CustomApiUnauthorizedResponse } from 'src/common/decorators/api-responses.decorator';
 
 @ApiBearerAuth('JWT-auth')
 @UseGuards(JwtAuthGuard)
@@ -107,6 +107,7 @@ export class TransactionController {
       ],
     },
   })
+  @CustomApiBadRequestResponse("Invalid user ID")
   @Get()
   findAll(@Req() req: IJwtRequest) {
     return this.transactionService.findAll(req.user.userId);
