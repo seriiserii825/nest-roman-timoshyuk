@@ -25,6 +25,7 @@ export function CustomApiBadRequestResponse(message: string) {
       schema: {
         example: {
           message,
+          error: 'Bad Request',
           statusCode: 400,
         },
       },

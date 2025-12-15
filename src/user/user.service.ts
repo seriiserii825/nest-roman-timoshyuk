@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -16,18 +21,13 @@ export class UserService {
       where: { email: createUserDto.email },
     });
     if (existing_user) {
-      throw new BadRequestException('Bad credentials');
+      throw new BadRequestException('User with this email already exists');
     }
     const new_user = this.userRepository.create({
       email: createUserDto.email,
       password: await argon2.hash(createUserDto.password),
     });
-    try {
-      await this.userRepository.save(new_user);
-      return { response: new_user.id };
-    } catch (error) {
-      throw new BadRequestException(`Bad credentials: ${error.message}`);
-    }
+    this.userRepository.save(new_user);
   }
 
   findAll() {

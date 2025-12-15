@@ -2,11 +2,7 @@ import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { ApiBody, ApiResponse } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import {
-  CustomApiBadRequestResponse,
-  CustomApiUnauthorizedResponse,
-} from 'src/common/decorators/api-responses.decorator';
+import { CustomApiBadRequestResponse } from 'src/common/decorators/api-responses.decorator';
 
 @Controller('users')
 export class UserController {
@@ -35,7 +31,7 @@ export class UserController {
       },
     },
   })
-  @CustomApiBadRequestResponse('Bad credentials')
+  @CustomApiBadRequestResponse('User with this email already exists')
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
   }
