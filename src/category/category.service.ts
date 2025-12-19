@@ -7,7 +7,7 @@ import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { IJwtRequest } from 'src/auth/interfaces/IJwtRequest';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Not, Repository } from 'typeorm';
 import { Category } from './entities/category.entity';
 
 @Injectable()
@@ -56,14 +56,31 @@ export class CategoryService {
   }
 
   async update(id: number, updateCategoryDto: UpdateCategoryDto) {
-    const updated_category = await this.categoryRepository.preload({
-      id: id,
-      ...updateCategoryDto,
+    // 1. Ищем категорию по id
+    const category = await this.categoryRepository.findOne({
+      where: { id },
     });
-    if (!updated_category) {
+
+    if (!category) {
       throw new NotFoundException('Category not found');
     }
-    return this.categoryRepository.save(updated_category);
+
+    // 2. Проверяем, занят ли title другой категорией
+    const categoryWithSameTitle = await this.categoryRepository.findOne({
+      where: {
+        title: updateCategoryDto.title,
+        id: Not(id), // 👈 важно
+      },
+    });
+
+    if (categoryWithSameTitle) {
+      throw new BadRequestException('Category title already in use');
+    }
+
+    // 3. Обновляем
+    category.title = updateCategoryDto.title;
+
+    return this.categoryRepository.save(category);
   }
 
   async remove(id: number) {
