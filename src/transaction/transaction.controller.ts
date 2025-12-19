@@ -21,7 +21,10 @@ import {
   ApiQuery,
   ApiResponse,
 } from '@nestjs/swagger';
-import { CustomApiBadRequestResponse, CustomApiUnauthorizedResponse } from 'src/common/decorators/api-responses.decorator';
+import {
+  CustomApiBadRequestResponse,
+  CustomApiUnauthorizedResponse,
+} from 'src/common/decorators/api-responses.decorator';
 
 @ApiBearerAuth('JWT-auth')
 @UseGuards(JwtAuthGuard)
@@ -88,26 +91,31 @@ export class TransactionController {
     schema: {
       example: [
         {
-          id: 1,
-          title: 'Salary for January',
-          amount: 100.0,
-          type: 'income',
-          category: {
-            id: 1,
-            title: 'Salary',
-            user: {
-              id: 1,
-            },
-            createdAt: '2024-01-01T00:00:00.000Z',
-            updatedAt: '2024-01-01T00:00:00.000Z',
+          id: 13,
+          title: 'Banking',
+          type: 'expense',
+          amount: 9999,
+          user: {
+            id: 9,
+            email: 'seriiburduja@gmail.com',
+            password:
+              '$argon2id$v=19$m=65536,t=3,p=4$7ZJGB4GkiVzCI+CTiAm6AQ$SoNe7v9eVyAVXXewnsPw7eHSVZ3NLiO+XAJXCkHbmpE',
+            createdAt: '2025-12-15T21:06:54.710Z',
+            updatedAt: '2025-12-15T21:06:54.710Z',
           },
-          createdAt: '2024-01-01T00:00:00.000Z',
-          updatedAt: '2024-01-01T00:00:00.000Z',
+          category: {
+            id: 13,
+            title: 'my new title',
+            createdAt: '2025-12-18T19:13:50.365Z',
+            updatedAt: '2025-12-18T19:13:50.365Z',
+          },
+          createdAt: '2025-12-18T21:11:26.800Z',
+          updatedAt: '2025-12-18T21:11:26.800Z',
         },
       ],
     },
   })
-  @CustomApiBadRequestResponse("Invalid user ID")
+  @CustomApiBadRequestResponse('Invalid user ID')
   @Get()
   findAll(@Req() req: IJwtRequest) {
     return this.transactionService.findAll(req.user.userId);
