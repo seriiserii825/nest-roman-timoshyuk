@@ -264,4 +264,9 @@ export class TransactionController {
   remove(@Param('id') id: string, @Req() req: IJwtRequest) {
     return this.transactionService.remove(+id, req.user.userId);
   }
+
+  @Get('summary')
+  incomeExpenseSummary(@Req() req: IJwtRequest) {
+    return this.transactionService.summary(req.user.userId);
+  }
 }

@@ -98,4 +98,25 @@ export class TransactionService {
       message: 'Transaction deleted successfully',
     };
   }
+
+  async summary(user_id: number): Promise<{ income: number; expense: number }> {
+    const incomeRaw = await this.transactionRepository
+      .createQueryBuilder('transaction')
+      .select('COALESCE(SUM(transaction.amount), 0)', 'total')
+      .where('transaction.user_id = :user_id', { user_id })
+      .andWhere('transaction.type = :type', { type: 'income' })
+      .getRawOne<{ total: string }>();
+
+    const expenseRaw = await this.transactionRepository
+      .createQueryBuilder('transaction')
+      .select('COALESCE(SUM(transaction.amount), 0)', 'total')
+      .where('transaction.user_id = :user_id', { user_id })
+      .andWhere('transaction.type = :type', { type: 'expense' })
+      .getRawOne<{ total: string }>();
+
+    return {
+      income: incomeRaw ? Number(incomeRaw.total) : 0,
+      expense: expenseRaw ? Number(expenseRaw.total) : 0,
+    };
+  }
 }
