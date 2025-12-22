@@ -15,19 +15,6 @@ services:
     networks:
       - backend
 
-  pgadmin:
-    image: dpage/pgadmin4:latest
-    restart: always
-    environment:
-      PGADMIN_DEFAULT_EMAIL: '${PGADMIN_EMAIL:-admin@admin.com}'
-      PGADMIN_DEFAULT_PASSWORD: '${PGADMIN_PASSWORD:-admin}'
-    ports:
-      - '5050:80'
-    volumes:
-      - pgadmin_data:/var/lib/pgadmin
-    networks:
-      - backend
-
   adminer: # Легче, чем pgAdmin!
     image: adminer
     restart: always
@@ -35,12 +22,12 @@ services:
       - 8080:8080
     environment:
       ADMINER_DEFAULT_SERVER: postgres
+      ADMINER_DESIGN: nette  # Красивая тема
     networks:
       - backend
 
 volumes:
   postgres_data:
-  pgadmin_data:
 
 networks:
   backend:
