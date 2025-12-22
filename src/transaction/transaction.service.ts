@@ -45,7 +45,6 @@ export class TransactionService {
     });
   }
 
-  
   findAllAdmin() {
     return this.transactionRepository.find({
       relations: ['category', 'user'],
@@ -54,18 +53,30 @@ export class TransactionService {
   }
 
   async findAllWithPagination(user_id: number, dto: PaginationTransactionDto) {
-    const transactions = await this.transactionRepository.findAndCount({
+    const { page = 1, limit = 10 } = dto;
+    const safePage = Math.max(1, page);
+    const safeLimit = Math.min(100, Math.max(1, limit));
+
+    const skip = (safePage - 1) * safeLimit;
+    const take = safeLimit;
+    const [data, total] = await this.transactionRepository.findAndCount({
       where: { user: { id: user_id } },
       relations: ['category'],
       order: { createdAt: 'DESC' },
-      skip: dto.skip,
-      take: dto.take,
+      skip,
+      take,
     });
-    const total = transactions[1];
     return {
-      data: transactions[0],
-      count: total,
-    }
+      data,
+      meta: {
+        total,
+        page: safePage,
+        limit: safeLimit,
+        totalPages: Math.ceil(total / safeLimit),
+        hasNext: safePage * safeLimit < total,
+        hasPrev: safePage > 1,
+      },
+    };
   }
 
   findOne(id: number, user_id: number) {

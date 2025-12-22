@@ -4,7 +4,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class PaginationTransactionDto {
   @ApiProperty({
-    name: 'skip',
+    name: 'page',
     required: false,
     type: Number,
     minimum: 0,
@@ -15,10 +15,10 @@ export class PaginationTransactionDto {
   @Type(() => Number)
   @IsInt()
   @Min(0)
-  skip?: number = 0;
+  page?: number = 1;
 
   @ApiProperty({
-    name: 'take',
+    name: 'limit',
     required: false,
     type: Number,
     minimum: 1,
@@ -31,5 +31,5 @@ export class PaginationTransactionDto {
   @IsInt()
   @Min(1)
   @Max(100)
-  take?: number = 10;
+  limit?: number = 10;
 }
