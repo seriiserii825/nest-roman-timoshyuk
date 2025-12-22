@@ -4,7 +4,6 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  IsNull,
   JoinColumn,
   ManyToOne,
   OneToMany,
@@ -14,7 +13,7 @@ import {
 } from 'typeorm';
 
 @Entity('categories')
-@Unique(['title'])
+@Unique(['title', 'user'])
 export class Category {
   @PrimaryGeneratedColumn()
   id: number;
