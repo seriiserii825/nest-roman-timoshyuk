@@ -8,6 +8,7 @@ import {
   UseGuards,
   Req,
   Query,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { TransactionService } from './transaction.service';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
@@ -32,6 +33,21 @@ import {
 @Controller('transactions')
 export class TransactionController {
   constructor(private readonly transactionService: TransactionService) {}
+
+  @ApiResponse({
+    status: 200,
+    description: 'Income and expense summary for the authenticated user.',
+    schema: {
+      example: {
+        income: 5000.0,
+        expense: 2000.0,
+      },
+    },
+  })
+  @Get('summary')
+  incomeExpenseSummary(@Req() req: IJwtRequest) {
+    return this.transactionService.summary(req.user.userId);
+  }
 
   @ApiBody({
     type: CreateTransactionDto,
@@ -241,7 +257,7 @@ export class TransactionController {
     },
   })
   @Get(':id')
-  findOne(@Param('id') id: string, @Req() req: IJwtRequest) {
+  findOne(@Param('id', ParseIntPipe) id: string, @Req() req: IJwtRequest) {
     return this.transactionService.findOne(+id, req.user.userId);
   }
 
@@ -263,10 +279,5 @@ export class TransactionController {
   @Delete(':id')
   remove(@Param('id') id: string, @Req() req: IJwtRequest) {
     return this.transactionService.remove(+id, req.user.userId);
-  }
-
-  @Get('summary')
-  incomeExpenseSummary(@Req() req: IJwtRequest) {
-    return this.transactionService.summary(req.user.userId);
   }
 }
